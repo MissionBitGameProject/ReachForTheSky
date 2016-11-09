@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title> Reach For The Sky! </title>
+        <!--
+        include the script file in the order of dependency.
+        independent files on top, file that depending on another file at the bottom.
+        -->
+        <!-- need to include phaser to create game object -->
+		<script type="text/javascript" src="/assets/phaser.js"></script>
+        <!-- if you need full screen, set margin to 0 -->
+<!--        <link rel="stylesheet" href="main.css">-->
+        <!-- include each states -->
+        <script type="text/javascript" src="GameScreen.js"></script>
+		<script type="text/javascript" src="TitleScreen.js"></script>
+        <script type="text/javascript" src="EndScreen.js"></script>
+        <!-- 
+        the last script to be loaded should be the script that the game starts on,
+        it create the game object and each game states and start a state
+        -->
+        <script type="text/javascript" src="directory.js"></script>
+
+	</head>
+
+	<body>
+		<p>This is my game!</p>
+		<div id="gameDiv"></div>
+	</body>
+
+</html>
