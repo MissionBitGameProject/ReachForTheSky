@@ -6,13 +6,16 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create
 function preload() {
     //Load background (Need image)
     game.load.image()
-    //Load ground and platforms
+    //Load ground and platforms (Need image)
     game.load.image()
-    //Load sprite
-    game.load.image()
+    //Load enemy (Need spritesheet)
+    game.load.spritesheet()
+    //Load hero (Need spritesheet)
+    game.load.spritesheet()
 }
 
 function create() {
+    
 }
 
 function update() {
