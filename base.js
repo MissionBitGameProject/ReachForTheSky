@@ -35,12 +35,6 @@ game.physics.startSystem(Phaser.Physics.ARCADE);
     ground.scale.setTo(2, 2);
     ground.body.immovable = true;
     
-    
-    var ground2 = platforms.create(0, game.world.height - 30, 'ground');
-    ground.scale.setTo(2, 2);
-    ground.body.immovable = true;
-    
-    
     //Creating hero sprite
     player = game.add.sprite(32, game.world.height - 150, 'hero');
     game.physics.arcade.enable(player);
