@@ -1,5 +1,5 @@
 
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, });
 
 function preload() {
 
@@ -46,7 +46,7 @@ function create() {
     game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.05, 0.05);
 
     //  Listen for this signal to reset once the fade is over
-    game.camera.onFadeComplete.add(resetFade, this);
+//    game.camera.onFadeComplete.add(resetFade, this);
 
     game.input.onDown.add(fade, this);
     
