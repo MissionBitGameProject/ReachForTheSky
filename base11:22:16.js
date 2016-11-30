@@ -2,8 +2,6 @@
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
-    game.load.baseURL = 'http://examples.phaser.io/assets/';
-    game.load.crossOrigin = 'anonymous';
 
     game.load.image('background','textures/cyberglow.png');
     game.load.image('player', 'sprites/thrust_ship2.png');
