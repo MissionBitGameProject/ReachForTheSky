@@ -1,118 +1,109 @@
 
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, });
 
 function preload() {
-    game.load.image('stars', 'http://wallup.net/wp-content/uploads/2016/01/171007-pixels-pixel_art-8-bit-moon-stars-video_games-space-dragon-clouds-cave_story.jpg');
-    //Load ground and platforms (Need image)
-    game.load.image('ground', '');
-    game.load.spritesheet('hero', 'https://phaser.io/content/tutorials/making-your-first-phaser-game/dude.png', 32, 48);
+
+    game.load.image('background','textures/cyberglow.png');
+    game.load.image('player', 'sprites/thrust_ship2.png');
+    game.load.image('bullet', 'misc/bullet0.png');
+    game.load.image('boss', 'boss.gif');
+
 }
 
-var s;
-var camSpeed = 4;
-var platforms;
 var player;
+var cursors;
+
+
+var bullets;
+
+var cursors;
+var fireButton;
+
+var bulletTime = 0;
+var bullet;
+
+var background;
+
+var boss;
 
 function create() {
-game.physics.startSystem(Phaser.Physics.ARCADE);
+ background = game.add.tileSprite(0, 0, 8000, 2000, 'background');
+    
+    game.world.setBounds(0, 0, 800, 600);
 
-    //  Make our world big ...
-    game.world.setBounds(0,0, 1920, 1080);
+    game.physics.startSystem(Phaser.Physics.P2JS);
 
-    //  Scrolling background
-    s = game.add.tileSprite(0, 0, 1920, 1080, 'stars');
+    player = game.add.sprite(400, 2000, 'player');
+
+    game.physics.p2.enable(player);
+
+    player.body.fixedRotation = true;
     
-      game.add.sprite(0, 0, 'sky');
-    //game.add.sprite(0, 0, 'hero');
-    
-    platforms = game.add.group();
-    platforms.enableBody = true;
-    
-    var ground = platforms.create(0, game.world.height - 64, 'ground');
-    ground.scale.setTo(2, 2);
-    ground.body.immovable = true;
-    
-    //Creating hero sprite
-    player = game.add.sprite(32, game.world.height - 150, 'hero');
-    game.physics.arcade.enable(player);
-    player.body.gravity.y = 400;
-    
-    //Walking animations
-    player.animations.add('left', [0, 1, 2, 3], 10, true);
-    player.animations.add('right', [5, 6, 7, 8], 10, true);
-    
+    boss = game.add.sprite(450, 2020, 'boss');
+   
+
+
+    cursors = game.input.keyboard.createCursorKeys();
+
+    //  Notice that the sprite doesn't have any momentum at all,
+    //  it's all just set by the camera follow type.
+    //  0.1 is the amount of linear interpolation to use.
+    //  The smaller the value, the smooth the camera (and the longer it takes to catch up)
+    game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.00, 0.00);
+
+    bullets = game.add.physicsGroup();
+    bullets.createMultiple(32, 'bullet', false);
+    bullets.setAll('checkWorldBounds', true);
+    bullets.setAll('outOfBoundsKill', true);
+
+    player.body.collideWorldBounds = true;
+
+    fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 }
 
 function update() {
- if (game.input.keyboard.isDown(Phaser.Keyboard.A))
-    {
-        game.camera.x -= camSpeed;
-
-        if (!game.camera.atLimit.x)
-        {
-            s.tilePosition.x += camSpeed;
-        }
-    }
-    else if (game.input.keyboard.isDown(Phaser.Keyboard.D))
-    {
-        game.camera.x += camSpeed;
-
-        if (!game.camera.atLimit.x)
-        {
-            s.tilePosition.x -= camSpeed;
-        }
-    }
-
-    if (game.input.keyboard.isDown(Phaser.Keyboard.W))
-    {
-        game.camera.y -= camSpeed;
-
-        if (!game.camera.atLimit.y)
-        {
-            s.tilePosition.y += camSpeed;
-        }
-    }
-    else if (game.input.keyboard.isDown(Phaser.Keyboard.S))
-    {
-        game.camera.y += camSpeed;
-
-        if (!game.camera.atLimit.y)
-        {
-            s.tilePosition.y -= camSpeed;
-        }
-    }
-    game.physics.arcade.collide(player, platforms);
     
-    player.body.velocity.x = 0;
-    var heroSpeed = 300;
-    cursors = game.input.keyboard.createCursorKeys();
-    
-    //Controls movement
+   player.body.setZeroVelocity();
+
+    if (cursors.up.isDown)
+    {
+        player.body.moveUp(300);
+    }
+    else if (cursors.down.isDown)
+    {
+        player.body.moveDown(300);
+    }
+
     if (cursors.left.isDown)
     {
-        //  Move to the left
-        player.body.velocity.x = heroSpeed * -1;
-
-        player.animations.play('left');
+        player.body.velocity.x = -300;
     }
     else if (cursors.right.isDown)
     {
-        //  Move to the right
-        player.body.velocity.x = heroSpeed;
-
-        player.animations.play('right');
+        player.body.velocity.x = 300;
     }
-    else
+    if (fireButton.isDown)
     {
-        //  Stand still
-        player.animations.stop();
-
-        player.frame = 4;
+        fireBullet();
     }
     
-    //  Allow the player to jump if they are touching the ground.
-    if (cursors.up.isDown && player.body.touching.down)
+function fireBullet () {
+
+    if (game.time.time > bulletTime)
     {
-        player.body.velocity.y = -350;
+        bullet = bullets.getFirstExists(false);
+
+        if (bullet)
+        {
+            bullet.reset(player.x - 8, player.y - 37);
+            bullet.body.velocity.y = -600;
+            bullet.angle = player.angle;
+            bulletTime = game.time.time + 250;
+        }
     }
+
+    }
+    
+    background.tilePosition.y += 2;
+    
 }
