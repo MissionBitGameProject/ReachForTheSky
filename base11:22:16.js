@@ -93,7 +93,7 @@ function fireBullet () {
             bullet.reset(player.x - 8, player.y - 37);
             bullet.body.velocity.y = -600;
             bullet.angle = player.angle;
-            bulletTime = game.time.time + 200;
+            bulletTime = game.time.time + 250;
         }
     }
 
