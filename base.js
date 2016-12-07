@@ -25,6 +25,10 @@ var bullet;
 var background;
 
 var boss;
+var boss_group;
+
+var BossImageWidth;
+var BossImageHeight;
 
 function create() {
  background = game.add.tileSprite(0, 0, 8000, 2000, 'background');
@@ -33,16 +37,28 @@ function create() {
 
     game.physics.startSystem(Phaser.Physics.P2JS);
 
-    player = game.add.sprite(400, 2000, 'player');
+    player = game.add.sprite(400, 600, 'player');
 
     game.physics.p2.enable(player);
 
     player.body.fixedRotation = true;
     
-    boss = game.add.sprite(450, 2020, 'boss');
-   
-
-
+    BossImageWidth = game.cache.getImage('boss').width;
+    BossImageHeight = game.cache.getImage('boss').height;
+    
+    boss_group = game.add.group();
+    boss_group.enableBody = true;
+    boss_group.physicsBodyType = Phaser.Physics.ARCADE;
+    for (var i = 0; i < 5; i++)
+    {
+        var boss = boss_group.create(Math.random() * (game.world.width - BossImageWidth), Math.random() * (game.world.height - BossImageHeight - 100), 'boss');
+        boss.body.immovable = true;
+        
+        boss.body.velocity.y = 50;
+        boss.checkWorldBounds = true;
+        boss.events.onOutOfBounds.add(resetBoss, this);
+    }
+    
     cursors = game.input.keyboard.createCursorKeys();
 
     //  Notice that the sprite doesn't have any momentum at all,
@@ -62,6 +78,11 @@ function create() {
 }
 
 function update() {
+    
+            background.tilePosition.y += 2;
+
+    
+    game.physics.arcade.overlap(bullet, boss_group, this.bulletHitBossHandler, null, this); 
     
    player.body.setZeroVelocity();
 
@@ -87,6 +108,12 @@ function update() {
         fireBullet();
     }
     
+    boss = boss_group.getFirstExists(false);
+    if (boss) {
+        boss.reset(Math.random() * (game.world.width - BossImageWidth), Math.random() * (game.world.height - BossImageHeight - 100));
+        boss.body.velocity.y = 30;
+    }
+}
 function fireBullet () {
 
     if (game.time.time > bulletTime)
@@ -101,9 +128,13 @@ function fireBullet () {
             bulletTime = game.time.time + 250;
         }
     }
+    
+}
 
-    }
-    
-    background.tilePosition.y += 2;
-    
+function resetBoss (boss) {
+    boss.kill();
+}
+function bulletHitBossHandler (bullet, boss){
+    bullet.kill();
+    boss.kill();
 }
