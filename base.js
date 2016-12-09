@@ -37,7 +37,6 @@ var totalCount=0;
 
 var isGameOver;
 
-var tryagain;
 var tryagaintext;
 
 var initBossQuantity = 10;
@@ -192,8 +191,18 @@ function gameover () {
     });
     isGameOver = true;
     gameovertext.anchor.setTo(0.5, 0.5);
-}
+    game.input.onDown.add(function(){
+       window.location.reload(true); 
+    });
+            tryagaintext = game.add.text((game.width / 2), 400, "Click to try again", {
+        font: "40px Arial",
+        fill: "#000000",
+        align: "center"
+    });
+        tryagaintext.anchor.setTo(0.5, 0.5);
 
+}
+    
 function addBoss(){
         var boss = boss_group.create(Math.random() * (game.world.width - BossImageWidth), Math.random() * (game.world.height - BossImageHeight - 500), 'boss');
         boss.body.immovable = true;
