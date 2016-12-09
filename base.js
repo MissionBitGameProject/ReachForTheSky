@@ -3,10 +3,10 @@ var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload:
 
 function preload() {
 
-    game.load.image('background','textures/cyberglow.png');
+    game.load.image('background','cloud background2.v4.png');
     game.load.image('player', 'pajama boy.png');
     game.load.image('bullet', 'pillow bullets.png');
-    game.load.image('boss', 'boss.gif');
+    game.load.spritesheet('boss', 'octoboss ss.png', 96, 96, 2);
     game.load.spritesheet('explosion', 'explosion17.png', 64, 64, 25);
 
 }
@@ -35,8 +35,6 @@ var text;
 var count;
 var totalCount=0;
 
-var gameovertext;
-
 var isGameOver;
 
 var tryagain;
@@ -58,8 +56,6 @@ function create() {
     player = game.add.sprite(400, 600, 'player');
 
     game.physics.enable(player, Phaser.Physics.ARCADE);
-
-//    player.body.fixedRotation = true;
     
     BossImageWidth = game.cache.getImage('boss').width;
     BossImageHeight = game.cache.getImage('boss').height;
@@ -93,7 +89,7 @@ function create() {
 
     text = game.add.text(100, 30, "Score: 0", {
         font: "40px Arial",
-        fill: "#ffffff",
+        fill: "#000000",
         align: "center"
     });
 
@@ -196,18 +192,13 @@ function gameover () {
     });
     isGameOver = true;
     gameovertext.anchor.setTo(0.5, 0.5);
-    tryagaintext = game.add.text((game.width / 2), 500, "click to try again", {
-        font: "65px Arial",
-        fill: "#ffffff",
-        align: "center"
-    });
-        tryagaintext.anchor.setTo(0.5, 0.5);
-
 }
 
 function addBoss(){
         var boss = boss_group.create(Math.random() * (game.world.width - BossImageWidth), Math.random() * (game.world.height - BossImageHeight - 500), 'boss');
         boss.body.immovable = true;
+        boss.animations.add('move', [0, 1], 5, true);
+        boss.animations.play('move');
         boss.body.velocity.x = rendSpeed(BossSpeed);
         boss.body.velocity.y = Math.abs(rendSpeed(BossSpeed));
         boss.checkWorldBounds = true;
@@ -221,6 +212,6 @@ function rendSpeed (bossVelocity){
 }
 
 function faster(){
-    BossSpeed += 20;
+    BossSpeed += 50;
 
 }
