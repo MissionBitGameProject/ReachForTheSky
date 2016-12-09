@@ -33,6 +33,19 @@ var BossImageHeight;
 
 var text;
 var count;
+var totalCount=0;
+
+var gameovertext;
+
+var isGameOver;
+
+var tryagain;
+var tryagaintext;
+
+var initBossQuantity = 10;
+var BossSpeed = 50;
+
+var faster;
 
 function create() {
     
@@ -54,14 +67,9 @@ function create() {
     boss_group = game.add.group();
     boss_group.enableBody = true;
     boss_group.physicsBodyType = Phaser.Physics.ARCADE;
-    for (var i = 0; i < 5; i++)
+    for (var i = 0; i < initBossQuantity; i++)
     {
-        var boss = boss_group.create(Math.random() * (game.world.width - BossImageWidth), Math.random() * (game.world.height - BossImageHeight - 100), 'boss');
-        boss.body.immovable = true;
-        
-        boss.body.velocity.y = 50;
-        boss.checkWorldBounds = true;
-        boss.events.onOutOfBounds.add(resetBoss, this);
+        addBoss();
     }
     
     cursors = game.input.keyboard.createCursorKeys();
@@ -125,13 +133,14 @@ function update() {
     
     boss = boss_group.getFirstExists(false);
     if (boss) {
-        boss.reset(Math.random() * (game.world.width - BossImageWidth), Math.random() * (game.world.height - BossImageHeight - 100));
-        boss.body.velocity.y = 30;
+        boss.reset(Math.random() * (game.world.width - BossImageWidth), Math.random() * (game.world.height - BossImageHeight - 550));
+        boss.body.velocity.x = rendSpeed(BossSpeed);
+        boss.body.velocity.y = Math.abs(rendSpeed(BossSpeed));
     }
 }
 function fireBullet () {
 
-    if (game.time.time > bulletTime)
+    if (!isGameOver && game.time.time > bulletTime)
     {
         bullet = bullets.getFirstExists(false);
 
@@ -170,17 +179,48 @@ function playerHitBossHandler (player, boss){
 function updateText() {
 
     count++;
-
+    totalCount++;
     text.setText("Score: " + count + " ");
 
+    if (totalCount == 10){
+        faster();
+        totalCount=0;
+    }
 }
 
 function gameover () {
-        text = game.add.text(game.world.centerX, game.world.centerY, "-GAME OVER-", {
+        gameovertext = game.add.text((game.width / 2), 200, "-GAME OVER-", {
         font: "65px Arial",
         fill: "#ffffff",
         align: "center"
     });
+    isGameOver = true;
+    gameovertext.anchor.setTo(0.5, 0.5);
+    tryagaintext = game.add.text((game.width / 2), 500, "click to try again", {
+        font: "65px Arial",
+        fill: "#ffffff",
+        align: "center"
+    });
+        tryagaintext.anchor.setTo(0.5, 0.5);
 
-    text.anchor.setTo(0.5, 0.5);
+}
+
+function addBoss(){
+        var boss = boss_group.create(Math.random() * (game.world.width - BossImageWidth), Math.random() * (game.world.height - BossImageHeight - 500), 'boss');
+        boss.body.immovable = true;
+        boss.body.velocity.x = rendSpeed(BossSpeed);
+        boss.body.velocity.y = Math.abs(rendSpeed(BossSpeed));
+        boss.checkWorldBounds = true;
+        boss.events.onOutOfBounds.add(resetBoss, this);
+}
+
+function rendSpeed (bossVelocity){
+    var redVelocity = Math.floor (Math.random()*bossVelocity) + 1;
+    redVelocity *= Math.floor(Math.random()*2) == 1 ? 1 : -1;
+    return redVelocity;
+}
+
+function faster(){
+    BossSpeed += 20;
+
 }
