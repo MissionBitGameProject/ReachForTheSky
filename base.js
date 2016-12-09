@@ -4,8 +4,8 @@ var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload:
 function preload() {
 
     game.load.image('background','textures/cyberglow.png');
-    game.load.image('player', 'sprites/thrust_ship2.png');
-    game.load.image('bullet', 'misc/bullet0.png');
+    game.load.image('player', 'pajama boy.png');
+    game.load.image('bullet', 'pillow bullets.png');
     game.load.image('boss', 'boss.gif');
     game.load.spritesheet('explosion', 'explosion17.png', 64, 64, 25);
 
