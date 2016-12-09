@@ -164,7 +164,7 @@ function bulletHitBossHandler (bullet, boss){
 function playerHitBossHandler (player, boss){
     
     var sprite = game.add.sprite(player.position.x, player.position.y, 'explosion');
-
+    sprite.scale.setTo(2,2);
     sprite.animations.add('explode');
 
     sprite.animations.play('explode', 50, false);
