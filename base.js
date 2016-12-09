@@ -187,7 +187,7 @@ function updateText() {
 function gameover () {
         gameovertext = game.add.text((game.width / 2), 200, "-GAME OVER-", {
         font: "65px Arial",
-        fill: "#ffffff",
+        fill: "#000000",
         align: "center"
     });
     isGameOver = true;
