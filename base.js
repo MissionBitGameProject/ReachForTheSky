@@ -7,6 +7,7 @@ function preload() {
     game.load.image('player', 'sprites/thrust_ship2.png');
     game.load.image('bullet', 'misc/bullet0.png');
     game.load.image('boss', 'boss.gif');
+    game.load.spritesheet('explosion', 'explosion17.png', 64, 64, 25);
 
 }
 
@@ -30,18 +31,22 @@ var boss_group;
 var BossImageWidth;
 var BossImageHeight;
 
+var text;
+var count;
+
 function create() {
+    
+        game.physics.startSystem(Phaser.Physics.ARCADE);
+
  background = game.add.tileSprite(0, 0, 8000, 2000, 'background');
     
     game.world.setBounds(0, 0, 800, 600);
 
-    game.physics.startSystem(Phaser.Physics.P2JS);
-
     player = game.add.sprite(400, 600, 'player');
 
-    game.physics.p2.enable(player);
+    game.physics.enable(player, Phaser.Physics.ARCADE);
 
-    player.body.fixedRotation = true;
+//    player.body.fixedRotation = true;
     
     BossImageWidth = game.cache.getImage('boss').width;
     BossImageHeight = game.cache.getImage('boss').height;
@@ -68,13 +73,23 @@ function create() {
     game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.00, 0.00);
 
     bullets = game.add.physicsGroup();
-    bullets.createMultiple(32, 'bullet', false);
+    bullets.createMultiple(5, 'bullet', false);
     bullets.setAll('checkWorldBounds', true);
     bullets.setAll('outOfBoundsKill', true);
 
     player.body.collideWorldBounds = true;
 
     fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    
+    count = 0;
+
+    text = game.add.text(100, 30, "Score: 0", {
+        font: "40px Arial",
+        fill: "#ffffff",
+        align: "center"
+    });
+
+    text.anchor.setTo(0.5, 0.5);
 }
 
 function update() {
@@ -82,26 +97,26 @@ function update() {
             background.tilePosition.y += 2;
 
     
-    game.physics.arcade.overlap(bullet, boss_group, this.bulletHitBossHandler, null, this); 
+    game.physics.arcade.overlap(bullets, boss_group, bulletHitBossHandler, null, this); 
     
-   player.body.setZeroVelocity();
-
+    game.physics.arcade.overlap(player, boss_group, playerHitBossHandler, null, this); 
+    
     if (cursors.up.isDown)
     {
-        player.body.moveUp(300);
+        player.body.position.y += -3;
     }
     else if (cursors.down.isDown)
     {
-        player.body.moveDown(300);
+        player.body.position.y += 3;
     }
 
     if (cursors.left.isDown)
     {
-        player.body.velocity.x = -300;
+        player.body.position.x += -3;
     }
     else if (cursors.right.isDown)
     {
-        player.body.velocity.x = 300;
+        player.body.position.x += 3;
     }
     if (fireButton.isDown)
     {
@@ -122,7 +137,7 @@ function fireBullet () {
 
         if (bullet)
         {
-            bullet.reset(player.x - 8, player.y - 37);
+            bullet.reset(player.x + 6, player.y - 37);
             bullet.body.velocity.y = -600;
             bullet.angle = player.angle;
             bulletTime = game.time.time + 250;
@@ -137,4 +152,35 @@ function resetBoss (boss) {
 function bulletHitBossHandler (bullet, boss){
     bullet.kill();
     boss.kill();
+    updateText ();
+
+}
+
+function playerHitBossHandler (player, boss){
+    
+    var sprite = game.add.sprite(player.position.x, player.position.y, 'explosion');
+
+    sprite.animations.add('explode');
+
+    sprite.animations.play('explode', 50, false);
+    player.kill ();
+    gameover();
+}
+
+function updateText() {
+
+    count++;
+
+    text.setText("Score: " + count + " ");
+
+}
+
+function gameover () {
+        text = game.add.text(game.world.centerX, game.world.centerY, "-GAME OVER-", {
+        font: "65px Arial",
+        fill: "#ffffff",
+        align: "center"
+    });
+
+    text.anchor.setTo(0.5, 0.5);
 }
