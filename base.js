@@ -50,8 +50,20 @@ var playerSpeedy = 3;
 var explodeOffsetx = 26;
 var explodeOffsety = 36;
 
+var difficultyHard;
+var difficultyEasy;
+
+var easy = {
+    speedIncrease: 50,
+    enemyThreshold: 15
+};
+var hard = {
+    speedIncrease: 100,
+    enemyThreshold: 5
+};
+var difficulty = easy;
+
 function create() {
-    
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
  background = game.add.tileSprite(0, 0, 8000, 2000, 'background');
@@ -87,7 +99,7 @@ function create() {
     bullets.setAll('outOfBoundsKill', true);
 
     player.body.collideWorldBounds = true;
-
+    
     fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     
     count = 0;
@@ -183,12 +195,10 @@ function playerHitBossHandler (player, boss){
 function updateText() {
 
     count++;
-    totalCount++;
     text.setText("Score: " + count + " ");
 
-    if (totalCount == 10){
+    if (count % difficulty.enemyThreshold == 0){
         faster();
-        totalCount=0;
     }
 }
 
@@ -200,16 +210,44 @@ function gameover () {
     });
     isGameOver = true;
     gameovertext.anchor.setTo(0.5, 0.5);
-    game.input.onDown.add(function(){
-       window.location.reload(true); 
-    });
-            tryagaintext = game.add.text((game.width / 2), 400, "Click to try again", {
+        
+
+    tryagaintext = game.add.text((game.width / 2), 400, "Click to try again", {
         font: "40px Arial",
         fill: "#000000",
         align: "center"
     });
         tryagaintext.anchor.setTo(0.5, 0.5);
+        tryagaintext.inputEnabled = true;
 
+     tryagaintext.events.onInputUp.add(function() {
+         reset();
+     });
+    
+        difficultyEasy = game.add.text(100, 500, "Easy mode", {
+        font: "40px Arial",
+        fill: "#000000",
+        align: "center"
+    });
+        difficultyEasy.inputEnabled = true;
+
+     difficultyEasy.events.onInputUp.add(function() {
+            difficulty = easy;
+         reset();         
+
+     });
+
+            difficultyHard = game.add.text(500, 500, "Hard mode", {
+        font: "40px Arial",
+        fill: "#000000",
+        align: "center"
+    });
+        difficultyHard.inputEnabled = true;
+
+     difficultyHard.events.onInputUp.add(function() {
+        difficulty = hard;
+     reset() ;
+     });
 }
     
 function addBoss(){
@@ -230,6 +268,15 @@ function rendSpeed (bossVelocity){
 }
 
 function faster(){
-    BossSpeed += 50;
+    BossSpeed += difficulty.speedIncrease;
+}
+
+function reset(){
+    isGameOver = false;
+    totalCount = 0;
+    count = 0;
+    BossSpeed = 50;
+
+    game.state.restart();
 
 }
