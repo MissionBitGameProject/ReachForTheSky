@@ -4,10 +4,10 @@ var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload:
 function preload() {
 
     game.load.image('background','cloud background2.v4.png');
-    game.load.image('player', 'pajama boy.png');
+    game.load.image('player', 'pajama boy2.png');
     game.load.image('bullet', 'pillow bullets.png');
     game.load.spritesheet('boss', 'octoboss ss.png', 96, 96, 2);
-    game.load.spritesheet('explosion', 'explosion17.png', 64, 64, 25);
+    game.load.spritesheet('explosion', 'explosion18.png', 64, 64, 26);
 
 }
 
@@ -43,6 +43,12 @@ var initBossQuantity = 10;
 var BossSpeed = 50;
 
 var faster;
+
+var playerSpeedx = 5;
+var playerSpeedy = 3;
+
+var explodeOffsetx = 26;
+var explodeOffsety = 36;
 
 function create() {
     
@@ -106,20 +112,20 @@ function update() {
     
     if (cursors.up.isDown)
     {
-        player.body.position.y += -3;
+        player.body.position.y += -playerSpeedy;
     }
     else if (cursors.down.isDown)
     {
-        player.body.position.y += 3;
+        player.body.position.y += playerSpeedy;
     }
 
     if (cursors.left.isDown)
     {
-        player.body.position.x += -3;
+        player.body.position.x += -playerSpeedx;
     }
     else if (cursors.right.isDown)
     {
-        player.body.position.x += 3;
+        player.body.position.x += playerSpeedx;
     }
     if (fireButton.isDown)
     {
@@ -162,11 +168,14 @@ function bulletHitBossHandler (bullet, boss){
 
 function playerHitBossHandler (player, boss){
     
-    var sprite = game.add.sprite(player.position.x, player.position.y, 'explosion');
+    var sprite = game.add.sprite(player.position.x + explodeOffsetx, player.position.y + explodeOffsety, 'explosion');
+    sprite.anchor.setTo(0.5, 0.5);
+
     sprite.scale.setTo(2,2);
     sprite.animations.add('explode');
 
     sprite.animations.play('explode', 50, false);
+
     player.kill ();
     gameover();
 }
