@@ -7,7 +7,7 @@ function preload() {
     game.load.image('player', 'pajama boy2.png');
     game.load.image('bullet', 'pillow bullets.png');
     game.load.spritesheet('boss', 'octoboss ss.png', 96, 96, 2);
-    game.load.spritesheet('explosion', 'explosion18.png', 64, 64, 26);
+    game.load.spritesheet('explosion', 'betterexplosion3.png', 96, 96, 24);
 
 }
 
@@ -186,7 +186,7 @@ function playerHitBossHandler (player, boss){
     sprite.scale.setTo(2,2);
     sprite.animations.add('explode');
 
-    sprite.animations.play('explode', 50, false);
+    sprite.animations.play('explode', 25, false);
 
     player.kill ();
     gameover();
