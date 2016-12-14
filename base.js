@@ -6,9 +6,8 @@ function preload() {
     game.load.image('background','cloud background2.v4.png');
     game.load.image('player', 'pajama boy2.png');
     game.load.image('bullet', 'pillow bullets.png');
-    game.load.spritesheet('boss', 'octoboss ss.png', 96, 96, 2);
+    game.load.spritesheet('boss', 'bossenemy.png', 87, 87, 2);
     game.load.spritesheet('explosion', 'betterexplosion3.png', 96, 96, 24);
-
 }
 
 var player;
